@@ -9,6 +9,6 @@ namespace AppMovies.Util
 {
     public interface ICsvMovieConverter
     {
-        List<MovieEntity> GetMoviesFromCsv(Stream csvBlob);
+        List<Movie> GetMoviesFromCsv(Stream csvBlob);
     }
 }

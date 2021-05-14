@@ -10,9 +10,9 @@ namespace AppMovies.Util
 {
     public class CsvMovieConverter : ICsvMovieConverter
     {
-        public List<MovieEntity> GetMoviesFromCsv (Stream csvBlob)
+        public List<Movie> GetMoviesFromCsv (Stream csvBlob)
         {
-            List<MovieEntity> movies = new List<MovieEntity>();
+            List<Movie> movies = new List<Movie>();
 
             var streamReader = new StreamReader(csvBlob);
             var csv = new CsvReader(streamReader , System.Globalization.CultureInfo.CurrentCulture);
@@ -22,17 +22,17 @@ namespace AppMovies.Util
                 csv.ReadHeader();
                 while (csv.Read())
                 {
-                    var movieEntity = new MovieEntity(csv.GetField("id"));
-                    movieEntity.Title = csv.GetField("title");
-                    movieEntity.Director = csv.GetField("director");
-                    movieEntity.Genre = csv.GetField("genre");
-                    movieEntity.Year = Int32.Parse( csv.GetField("year"));
-                    movieEntity.Country = csv.GetField("country");
-                    movieEntity.ImageUrl = csv.GetField("imageurl");
-                    movies.Add(movieEntity);
+                    var movie = new Movie();
+                    movie.Id = csv.GetField("id");
+                    movie.Title = csv.GetField("title");
+                    movie.Director = csv.GetField("director");
+                    movie.Genre = csv.GetField("genre");
+                    movie.Year = Int32.Parse( csv.GetField("year"));
+                    movie.Country = csv.GetField("country");
+                    movie.ImageUrl = csv.GetField("imageurl");
+                    movies.Add(movie);
                 }
             }
-
             return movies;
         }
     }
