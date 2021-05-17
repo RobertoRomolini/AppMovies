@@ -27,7 +27,7 @@ namespace AppMovies.Util
                     movie.Title = csv.GetField("title");
                     movie.Director = csv.GetField("director");
                     movie.Genre = csv.GetField("genre");
-                    movie.Year = Int32.Parse( csv.GetField("year"));
+                    movie.Year = csv.GetField("year");
                     movie.Country = csv.GetField("country");
                     movie.ImageUrl = csv.GetField("imageurl");
                     movies.Add(movie);

@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using AppMovies.Entities;
+using AppMovies.Models;
 using AppMovies.Repository;
 using AppMovies.Util;
 using Microsoft.Azure.WebJobs;
@@ -31,7 +32,9 @@ namespace AppMovies.Functions
         {
             try
             {
-                MovieEntity movieEntity = JsonConvert.DeserializeObject<MovieEntity>(myQueueItem);
+                Movie movie = JsonConvert.DeserializeObject<Movie>(myQueueItem);
+
+                MovieEntity movieEntity = new MovieEntity(movie);
 
                 if (movieEntity.Title != "")
                 {

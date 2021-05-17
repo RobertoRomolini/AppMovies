@@ -20,6 +20,7 @@ namespace AppMovies
             builder.Services.AddSingleton<IImagesDownloader, ImagesDownloader>();
 
             builder.Services.AddSingleton<ITableCrudRepository<MovieEntity>, MovieCrudRepository>();
+            builder.Services.AddSingleton<IApiKeyCrudRepository, ApiKeyCrudRepository>();
             builder.Services.AddSingleton<IBlobCrudRepository, MovieImageCrudRepository>();
             builder.Services.AddLogging();
             
