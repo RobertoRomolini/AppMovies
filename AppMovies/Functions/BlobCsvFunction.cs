@@ -29,7 +29,7 @@ namespace AppMovies
         [FunctionName("CsvFunction")]
         public async Task CsvFunction([BlobTrigger("csvmovies/{name}", Connection = "AzureWebJobsStorage")]Stream csvBlob, string name, ILogger log)
         {
-            int rowLimit = 5;
+            int rowLimit = 5000;
             
             if (_csvMovieConverter.CsvRowCount(csvBlob) > rowLimit)
             {
