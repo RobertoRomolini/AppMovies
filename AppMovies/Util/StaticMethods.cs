@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -21,6 +22,13 @@ namespace AppMovies.Util
                 builder.Append(bytes[i].ToString("x2"));
             }
             return builder.ToString();
-        } 
+        }
+
+        public static byte[] GetImageFromUrl(string url)
+        {
+            WebClient webClient = new WebClient();
+            byte[] imageBytes = webClient.DownloadData(url);
+            return imageBytes;
+        }
     }
 }

@@ -10,7 +10,6 @@ namespace AppMovies.Entities
         public ApiKeyEntity()
         {
         }
-
         public string ApiKey { set; get; }
     }
 }

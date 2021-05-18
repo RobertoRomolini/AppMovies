@@ -17,14 +17,11 @@ namespace AppMovies.Functions
     {
         private readonly ITableCrudRepository<MovieEntity> _movieEntityCrudRepository;
         private readonly IBlobCrudRepository _blobCrudRepository;
-        private readonly IImagesDownloader _imagesDownloader;
 
-        public QueueMovieFunction(ITableCrudRepository<MovieEntity> repository , IBlobCrudRepository blobCrudRepository,
-            IImagesDownloader imagesDownloader)
+        public QueueMovieFunction(ITableCrudRepository<MovieEntity> repository , IBlobCrudRepository blobCrudRepository)
         {
             _movieEntityCrudRepository = repository;
             _blobCrudRepository = blobCrudRepository;
-            _imagesDownloader = imagesDownloader;
         }
 
         [FunctionName("QueueMovieFunction")]
@@ -39,7 +36,7 @@ namespace AppMovies.Functions
                 if (movieEntity.Title != "")
                 {
                     //Download the image from the Url
-                    var imageBytes = _imagesDownloader.GetImageFromUrl(movieEntity.ImageUrl);
+                    var imageBytes = StaticMethods.GetImageFromUrl(movieEntity.ImageUrl);
 
                     //Set filename equal to the storage table id
                     string fileName = movieEntity.Id + Path.GetExtension(movieEntity.ImageUrl);
@@ -54,10 +51,9 @@ namespace AppMovies.Functions
                 {
                     //Delete the entity from the storage table movies
                     await _movieEntityCrudRepository.Delete(movieEntity.Id);
-
+                    //Delete the image from the storage blob movieimages
                     await _blobCrudRepository.Delete(movieEntity.Id + ".jpg");
                 }
-                
             }
             catch (Exception exception)
             {

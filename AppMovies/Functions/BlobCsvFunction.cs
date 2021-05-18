@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using AppMovies.Entities;
 using AppMovies.Providers;
 using AppMovies.Models;
 using AppMovies.Util;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -25,8 +22,29 @@ namespace AppMovies
             _queue = queue.GetQueue("movies");
         }
 
-        [FunctionName("BlobCsvFunction")]
-        public async Task Run([BlobTrigger("csvmovies/{name}", Connection = "AzureWebJobsStorage")]Stream csvBlob, string name, ILogger log)
+        [FunctionName("CsvFunction")]
+        public async Task CsvFunction([BlobTrigger("csvmovies/{name}", Connection = "AzureWebJobsStorage")]Stream csvBlob, string name, ILogger log)
+        {
+            int rowLimit = 5000;
+            
+            if (_csvMovieConverter.CsvRowCount(csvBlob) > rowLimit)
+            {
+                _csvMovieConverter.SplitCsv(csvBlob , rowLimit);
+            }
+            else
+            {
+                await AddMessageQueue(csvBlob);
+            }
+
+        }
+
+        [FunctionName("BlobCsvSplittedFunction")]
+        public async Task BlobCsvSplittedFunction([BlobTrigger("csvsplitted/{name}", Connection = "AzureWebJobsStorage")] Stream csvBlob, string name, ILogger log)
+        {
+            await AddMessageQueue(csvBlob);
+        }
+
+        private async Task AddMessageQueue (Stream csvBlob)
         {
             List<Movie> movies = _csvMovieConverter.GetMoviesFromCsv(csvBlob);
 

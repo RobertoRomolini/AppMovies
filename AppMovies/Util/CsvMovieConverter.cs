@@ -1,6 +1,9 @@
 ﻿using AppMovies.Entities;
 using AppMovies.Models;
+using AppMovies.Providers;
+using AppMovies.Repository;
 using CsvHelper;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +13,12 @@ namespace AppMovies.Util
 {
     public class CsvMovieConverter : ICsvMovieConverter
     {
+        private readonly ICsvSplittedCrudRepository _repository;
+        public CsvMovieConverter(ICsvSplittedCrudRepository repository)
+        {
+            _repository = repository;
+        }
+
         public List<Movie> GetMoviesFromCsv (Stream csvBlob)
         {
             List<Movie> movies = new List<Movie>();
@@ -33,7 +42,48 @@ namespace AppMovies.Util
                     movies.Add(movie);
                 }
             }
+            csvBlob.Position = 0;
             return movies;
+        }
+
+        public void SplitCsv(Stream csvBlob , int rowNumbers)
+        {
+            var streamReader = new StreamReader(csvBlob);
+            
+            string header = streamReader.ReadLine();
+            while (!streamReader.EndOfStream)
+            {
+                int count = 0;
+                string fileName = Guid.NewGuid().ToString();
+
+                MemoryStream outStream = new MemoryStream();
+                StreamWriter streamWriter = new StreamWriter(outStream);
+                streamWriter.WriteLine(header);
+                streamWriter.AutoFlush = true;
+
+                while (!streamReader.EndOfStream && ++count < rowNumbers)
+                {
+                    streamWriter.WriteLine(streamReader.ReadLine());
+                }
+                
+                _repository.Add(outStream.ToArray(), fileName);
+            }
+            
+            //Set the position to read again the file
+            csvBlob.Position = 0;
+        }
+
+        public int CsvRowCount (Stream csvBlob)
+        {
+            var streamReader = new StreamReader(csvBlob);
+            int rowCount = 0;
+            while (!streamReader.EndOfStream)
+            {
+                streamReader.ReadLine();
+                rowCount++;
+            }
+            csvBlob.Position = 0;
+            return rowCount;
         }
     }
 }

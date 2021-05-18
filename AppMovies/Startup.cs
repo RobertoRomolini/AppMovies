@@ -17,11 +17,11 @@ namespace AppMovies
             builder.Services.AddSingleton<IStorageQueueProvider, StorageQueueProvider>();
             builder.Services.AddSingleton<IStorageBlobProvider, StorageBlobProvider>();
             builder.Services.AddSingleton<ICsvMovieConverter, CsvMovieConverter>();
-            builder.Services.AddSingleton<IImagesDownloader, ImagesDownloader>();
 
             builder.Services.AddSingleton<ITableCrudRepository<MovieEntity>, MovieCrudRepository>();
             builder.Services.AddSingleton<IApiKeyCrudRepository, ApiKeyCrudRepository>();
             builder.Services.AddSingleton<IBlobCrudRepository, MovieImageCrudRepository>();
+            builder.Services.AddSingleton<ICsvSplittedCrudRepository, CsvSplittedCrudRepository>();
             builder.Services.AddLogging();
             
         }

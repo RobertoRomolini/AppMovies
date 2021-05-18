@@ -9,7 +9,5 @@ namespace AppMovies.Repository
     {
         Task<string> Get();
         Task Update(string encryptedApiKey);
-
-
     }
 }
