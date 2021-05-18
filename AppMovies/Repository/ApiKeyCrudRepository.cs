@@ -12,7 +12,7 @@ namespace AppMovies.Repository
     {
         private readonly CloudTable _table;
 
-        public ApiKeyCrudRepository(IStorageTableProvider storageTableProvider)
+        public ApiKeyCrudRepository(IStorageServiceProvider storageTableProvider)
         {
             _table = storageTableProvider.GetStorageTable("apikey");
         }

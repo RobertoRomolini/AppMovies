@@ -10,7 +10,7 @@ namespace AppMovies.Repository
     public class CsvSplittedCrudRepository : ICsvSplittedCrudRepository
     {
         private readonly CloudBlobContainer _container;
-        public CsvSplittedCrudRepository(IStorageBlobProvider storageTableProvider)
+        public CsvSplittedCrudRepository(IStorageServiceProvider storageTableProvider)
         {
             _container = storageTableProvider.GetBlobContainer("csvsplitted");
         }

@@ -68,7 +68,6 @@ namespace AppMovies.Util
                 
                 _repository.Add(outStream.ToArray(), fileName);
             }
-            
             //Set the position to read again the file
             csvBlob.Position = 0;
         }

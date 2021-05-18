@@ -13,9 +13,7 @@ namespace AppMovies
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddSingleton<IStorageTableProvider, StorageTableProvider>();
-            builder.Services.AddSingleton<IStorageQueueProvider, StorageQueueProvider>();
-            builder.Services.AddSingleton<IStorageBlobProvider, StorageBlobProvider>();
+            builder.Services.AddSingleton<IStorageServiceProvider, StorageServiceProvider>();
             builder.Services.AddSingleton<ICsvMovieConverter, CsvMovieConverter>();
 
             builder.Services.AddSingleton<ITableCrudRepository<MovieEntity>, MovieCrudRepository>();

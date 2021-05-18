@@ -10,7 +10,7 @@ namespace AppMovies.Repository
     public class MovieImageCrudRepository : IBlobCrudRepository
     {
         private readonly CloudBlobContainer _container;
-        public MovieImageCrudRepository(IStorageBlobProvider storageTableProvider)
+        public MovieImageCrudRepository(IStorageServiceProvider storageTableProvider)
         {
             _container = storageTableProvider.GetBlobContainer("movieimages");
         }

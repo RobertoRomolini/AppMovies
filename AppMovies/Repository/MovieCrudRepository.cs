@@ -15,7 +15,7 @@ namespace AppMovies.Repository
     {
         private readonly CloudTable _table;
 
-        public MovieCrudRepository(IStorageTableProvider storageTableProvider)
+        public MovieCrudRepository(IStorageServiceProvider storageTableProvider)
         {
             _table = storageTableProvider.GetStorageTable("movies");
         }
