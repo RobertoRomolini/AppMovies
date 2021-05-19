@@ -13,6 +13,7 @@ using System.Web;
 using System.Linq;
 using AppMovies.Models;
 using AppMovies.Util;
+using static AppMovies.Startup;
 
 namespace AppMovies.Functions
 {
@@ -20,13 +21,13 @@ namespace AppMovies.Functions
     {
         private readonly ITableCrudRepository<MovieEntity> _repository;
         private readonly IApiKeyCrudRepository _apiKeyRepository;
-        private readonly IBlobCrudRepository _blobCrudRepository;
+        private readonly IBlobCrudRepository _movieImageCrudRepository;
         public HttpMovieFunctions(ITableCrudRepository<MovieEntity> repository , IApiKeyCrudRepository apiKeyRepository ,
-            IBlobCrudRepository blobCrudRepository)
+            ServiceBlobResolver serviceAccessor)
         {
             _repository = repository;
             _apiKeyRepository = apiKeyRepository;
-            _blobCrudRepository = blobCrudRepository;
+            _movieImageCrudRepository = serviceAccessor("MovieImage");
         }
 
         [FunctionName("GetMovies")]
@@ -89,7 +90,8 @@ namespace AppMovies.Functions
             try
             {
                 string apiKey = req.Headers["x-api-key"];
-                if (apiKey == await _apiKeyRepository.Get())
+                string encryptedApiKey = StaticMethods.Encrypt(apiKey);
+                if (encryptedApiKey == await _apiKeyRepository.Get())
                 {
                     string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                     Movie movie = JsonConvert.DeserializeObject<Movie>(requestBody);
@@ -125,10 +127,11 @@ namespace AppMovies.Functions
             try
             {
                 string apiKey = req.Headers["x-api-key"];
-                if (apiKey == await _apiKeyRepository.Get())
+                string encryptedApiKey = StaticMethods.Encrypt(apiKey);
+                if (encryptedApiKey == await _apiKeyRepository.Get())
                 {
                     await _repository.Delete(id);
-                    await _blobCrudRepository.Delete(id + ".jpg");
+                    await _movieImageCrudRepository.Delete(id + ".jpg");
                     return new NoContentResult();
                 }
                 else

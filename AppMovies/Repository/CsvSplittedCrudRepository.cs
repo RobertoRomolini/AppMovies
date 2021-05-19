@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppMovies.Repository
 {
-    public class CsvSplittedCrudRepository : ICsvSplittedCrudRepository
+    public class CsvSplittedCrudRepository : IBlobCrudRepository
     {
         private readonly CloudBlobContainer _container;
         public CsvSplittedCrudRepository(IStorageServiceProvider storageTableProvider)

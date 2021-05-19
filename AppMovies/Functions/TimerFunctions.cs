@@ -7,10 +7,10 @@ namespace AppMovies.Functions
 {
     public static class TimerFunctions
     {
-        /*[FunctionName("Function1")]
+        [FunctionName("Function1")]
         public static void Run([TimerTrigger("1 * * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-        }*/
+        }
     }
 }

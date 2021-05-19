@@ -8,15 +8,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using static AppMovies.Startup;
 
 namespace AppMovies.Util
 {
     public class CsvMovieConverter : ICsvMovieConverter
     {
-        private readonly ICsvSplittedCrudRepository _repository;
-        public CsvMovieConverter(ICsvSplittedCrudRepository repository)
+        private readonly IBlobCrudRepository _csvSplittedCrudRepository;
+        public CsvMovieConverter(ServiceBlobResolver serviceAccessor)
         {
-            _repository = repository;
+            _csvSplittedCrudRepository = serviceAccessor("CsvSplitted");
         }
 
         public List<Movie> GetMoviesFromCsv (Stream csvBlob)
@@ -65,8 +66,8 @@ namespace AppMovies.Util
                 {
                     streamWriter.WriteLine(streamReader.ReadLine());
                 }
-                
-                _repository.Add(outStream.ToArray(), fileName);
+
+                _csvSplittedCrudRepository.Add(outStream.ToArray(), fileName);
             }
             //Set the position to read again the file
             csvBlob.Position = 0;

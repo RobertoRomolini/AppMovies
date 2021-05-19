@@ -10,26 +10,27 @@ using System.Text.Json;
 using Microsoft.WindowsAzure.Storage.Queue;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Blob;
+using static AppMovies.Startup;
 
 namespace AppMovies
 {
     public class BlobCsvFunction
     {
         private readonly ICsvMovieConverter _csvMovieConverter;
-        private readonly ICsvSplittedCrudRepository _csvSplittedCrudRepository;
+        private readonly IBlobCrudRepository _csvSplittedCrudRepository;
         private readonly CloudQueue _queue;
 
-        public BlobCsvFunction(ICsvMovieConverter csvMovieConverter , IStorageServiceProvider storageServiceProvider , ICsvSplittedCrudRepository csvSplittedCrudRepository)
+        public BlobCsvFunction(ICsvMovieConverter csvMovieConverter , IStorageServiceProvider storageServiceProvider , ServiceBlobResolver serviceAccessor)
         {
             _csvMovieConverter = csvMovieConverter;
             _queue = storageServiceProvider.GetQueue("movies");
-            _csvSplittedCrudRepository = csvSplittedCrudRepository;
+            _csvSplittedCrudRepository = serviceAccessor("CsvSplitted");
         }
 
         [FunctionName("CsvFunction")]
         public async Task CsvFunction([BlobTrigger("csvmovies/{name}", Connection = "AzureWebJobsStorage")]Stream csvBlob, string name, ILogger log)
         {
-            int rowLimit = 5000;
+            int rowLimit = 30;
             
             if (_csvMovieConverter.CsvRowCount(csvBlob) > rowLimit)
             {

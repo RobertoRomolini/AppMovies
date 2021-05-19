@@ -10,18 +10,19 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using static AppMovies.Startup;
 
 namespace AppMovies.Functions
 {
     public class QueueMovieFunction
     {
         private readonly ITableCrudRepository<MovieEntity> _movieEntityCrudRepository;
-        private readonly IBlobCrudRepository _blobCrudRepository;
+        private readonly IBlobCrudRepository _movieImageCrudRepository;
 
-        public QueueMovieFunction(ITableCrudRepository<MovieEntity> repository , IBlobCrudRepository blobCrudRepository)
+        public QueueMovieFunction(ITableCrudRepository<MovieEntity> movieEntityCrudRepository, ServiceBlobResolver serviceAccessor)
         {
-            _movieEntityCrudRepository = repository;
-            _blobCrudRepository = blobCrudRepository;
+            _movieEntityCrudRepository = movieEntityCrudRepository;
+            _movieImageCrudRepository = serviceAccessor("MovieImage");
         }
 
         [FunctionName("QueueMovieFunction")]
@@ -45,14 +46,14 @@ namespace AppMovies.Functions
                     await _movieEntityCrudRepository.AddOrUpdate(movieEntity);
 
                     //Add image to the storage blob imagemovies
-                    await _blobCrudRepository.Add(imageBytes, fileName);
+                    await _movieImageCrudRepository.Add(imageBytes, fileName);
                 }
                 else
                 {
                     //Delete the entity from the storage table movies
                     await _movieEntityCrudRepository.Delete(movieEntity.Id);
                     //Delete the image from the storage blob movieimages
-                    await _blobCrudRepository.Delete(movieEntity.Id + ".jpg");
+                    await _movieImageCrudRepository.Delete(movieEntity.Id + ".jpg");
                 }
             }
             catch (Exception exception)
