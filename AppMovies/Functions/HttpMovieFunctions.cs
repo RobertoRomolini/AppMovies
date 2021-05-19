@@ -57,7 +57,7 @@ namespace AppMovies.Functions
             try
             {
                 string apiKey = req.Headers["x-api-key"];
-                string encryptedApiKey = StaticMethods.Encrypt(apiKey);
+                string encryptedApiKey = StaticMethods.Hash(apiKey);
                 if (encryptedApiKey == await _apiKeyRepository.Get())
                 {
                     string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -90,7 +90,7 @@ namespace AppMovies.Functions
             try
             {
                 string apiKey = req.Headers["x-api-key"];
-                string encryptedApiKey = StaticMethods.Encrypt(apiKey);
+                string encryptedApiKey = StaticMethods.Hash(apiKey);
                 if (encryptedApiKey == await _apiKeyRepository.Get())
                 {
                     string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -127,7 +127,7 @@ namespace AppMovies.Functions
             try
             {
                 string apiKey = req.Headers["x-api-key"];
-                string encryptedApiKey = StaticMethods.Encrypt(apiKey);
+                string encryptedApiKey = StaticMethods.Hash(apiKey);
                 if (encryptedApiKey == await _apiKeyRepository.Get())
                 {
                     await _repository.Delete(id);

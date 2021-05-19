@@ -27,7 +27,8 @@ namespace AppMovies
             //--------------------------------------------------------------------------------------------------//
             builder.Services.AddSingleton<MovieImageCrudRepository>();
             builder.Services.AddSingleton<CsvSplittedCrudRepository>();
-            builder.Services.AddSingleton<ServiceBlobResolver>(serviceProvider => key =>
+            builder.Services.AddSingleton<CsvMoviesCrudRepository>();
+            builder.Services.AddTransient<ServiceBlobResolver>(serviceProvider => key =>
             {
                 switch (key)
                 {
@@ -35,6 +36,8 @@ namespace AppMovies
                         return serviceProvider.GetService<MovieImageCrudRepository>();
                     case "CsvSplitted":
                         return serviceProvider.GetService<CsvSplittedCrudRepository>();
+                    case "CsvMovies":
+                        return serviceProvider.GetService<CsvMoviesCrudRepository>();
                     default:
                         throw new KeyNotFoundException();
                 }

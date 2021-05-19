@@ -36,7 +36,7 @@ namespace AppMovies.Functions
                 generator.GetBytes(key);
                 string apiKey = Convert.ToBase64String(key);
 
-                string encryptedApiKey = StaticMethods.Encrypt(apiKey);
+                string encryptedApiKey = StaticMethods.Hash(apiKey);
 
                 await _apiKeyRepository.Update(encryptedApiKey);
                 return new OkObjectResult(apiKey);

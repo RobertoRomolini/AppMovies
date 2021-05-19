@@ -8,12 +8,12 @@ namespace AppMovies.Util
 {
     public static class StaticMethods
     {
-        public static string Encrypt (string stringToEncrypt)
+        public static string Hash (string stringToHash)
         {
             SHA256 sha256Hash = SHA256.Create();
 
             // ComputeHash - returns byte array  
-            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(stringToEncrypt));
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(stringToHash));
 
             // Convert byte array to a string   
             StringBuilder builder = new StringBuilder();

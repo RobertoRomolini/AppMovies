@@ -39,21 +39,18 @@ namespace AppMovies.Functions
                     //Download the image from the Url
                     var imageBytes = StaticMethods.GetImageFromUrl(movieEntity.ImageUrl);
 
-                    //Set filename equal to the storage table id
-                    string fileName = movieEntity.Id + Path.GetExtension(movieEntity.ImageUrl);
-
                     //Add or update entity to the storage table movies
                     await _movieEntityCrudRepository.AddOrUpdate(movieEntity);
 
                     //Add image to the storage blob imagemovies
-                    await _movieImageCrudRepository.Add(imageBytes, fileName);
+                    await _movieImageCrudRepository.Add(imageBytes, movieEntity.Id);
                 }
                 else
                 {
                     //Delete the entity from the storage table movies
                     await _movieEntityCrudRepository.Delete(movieEntity.Id);
                     //Delete the image from the storage blob movieimages
-                    await _movieImageCrudRepository.Delete(movieEntity.Id + ".jpg");
+                    await _movieImageCrudRepository.Delete(movieEntity.Id);
                 }
             }
             catch (Exception exception)

@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure.Storage.Blobs;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Queue;
@@ -18,7 +19,7 @@ namespace AppMovies.Providers
             table.CreateIfNotExists();
             return table;
         }
-        public CloudQueue GetQueue(string tableName)
+        public CloudQueue GetQueueTable(string tableName)
         {
             Microsoft.WindowsAzure.Storage.CloudStorageAccount storageAccount = Microsoft.WindowsAzure.Storage.CloudStorageAccount.Parse("UseDevelopmentStorage=true");
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
@@ -33,6 +34,12 @@ namespace AppMovies.Providers
             CloudBlobContainer container = blobClient.GetContainerReference(tableName);
             container.CreateIfNotExistsAsync();
             return container;
+        }
+        public BlobContainerClient GetContainerClient(string tableName)
+        {
+            BlobServiceClient blobServiceClient = new BlobServiceClient("UseDevelopmentStorage=true");
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(tableName);
+            return containerClient;
         }
     }
 }
