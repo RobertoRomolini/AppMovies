@@ -28,9 +28,7 @@ namespace AppMovies.Functions
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-
             var blobList = await _csvMovieCrudRepository.GetFilesList();
-
 
             foreach (GenericBlob genericBlob in blobList)
             {
