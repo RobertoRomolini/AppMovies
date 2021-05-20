@@ -13,5 +13,6 @@ namespace AppMovies.Repository
         Task Add(byte[] file, string blobName);
         //Task Update(byte[] file , string blobName);
         Task Delete(string blobName);
+        Task DeleteFolder(string folderName);
     }
 }
