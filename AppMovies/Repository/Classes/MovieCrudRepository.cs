@@ -30,18 +30,37 @@ namespace AppMovies.Repository
             {
                 string keyValue = collection[key];
 
-                var rowKeyRangeEnd =
-                    keyValue.Substring(0, keyValue.Length - 1) + (char)(keyValue.Last() + 1);
+                // Count the number of digits at the end of the string
+                int numbersAtEnd = 0;
+                int position = 1;
+                while (keyValue.Length >= position && char.IsDigit(keyValue[keyValue.Length - position]))
+                {
+                    numbersAtEnd++;
+                    position++;
+                }
 
-                var likeFilter =
-                    TableQuery.CombineFilters(
-                        TableQuery.GenerateFilterCondition(key, QueryComparisons.GreaterThan, keyValue),
-                        TableOperators.And,
-                        TableQuery.GenerateFilterCondition(key, QueryComparisons.LessThan, rowKeyRangeEnd));
+                string rowKeyRangeEnd = "";
+
+                // If the string contains numbers at the end, the number is incremented as a number, not as a string
+                if (numbersAtEnd > 0)
+                {
+                    int endNumber = Int32.Parse(keyValue.Substring(keyValue.Length - numbersAtEnd));
+                    string startString = keyValue.Substring(0, keyValue.Length - numbersAtEnd);
+                    rowKeyRangeEnd = startString + (endNumber + 1).ToString();
+                }
+                else
+                {
+                    rowKeyRangeEnd = keyValue.Substring(0, keyValue.Length - 1) + (char)(keyValue.Last() + 1);
+                }
+
+                var likeFilter = TableQuery.CombineFilters(
+                    TableQuery.GenerateFilterCondition(key, QueryComparisons.GreaterThan, keyValue),
+                    TableOperators.And,
+                    TableQuery.GenerateFilterCondition(key, QueryComparisons.LessThan, rowKeyRangeEnd));
                 
                 var likePartitionFilter = TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And, likeFilter);
                 var equalPartitionFilter = TableQuery.CombineFilters(partitionKeyFilter, TableOperators.And,
-                        TableQuery.GenerateFilterCondition(key, QueryComparisons.Equal, keyValue));
+                    TableQuery.GenerateFilterCondition(key, QueryComparisons.Equal, keyValue));
 
                 var likeEqualFilter = TableQuery.CombineFilters(likePartitionFilter, TableOperators.Or, equalPartitionFilter);
 
