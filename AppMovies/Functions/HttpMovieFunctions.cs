@@ -131,7 +131,7 @@ namespace AppMovies.Functions
                 if (encryptedApiKey == await _apiKeyRepository.Get())
                 {
                     await _repository.Delete(id);
-                    await _movieImageCrudRepository.Delete(id);
+                    await _movieImageCrudRepository.DeleteFolder(id);
                     return new NoContentResult();
                 }
                 else

@@ -43,14 +43,14 @@ namespace AppMovies.Functions
                     await _movieEntityCrudRepository.AddOrUpdate(movieEntity);
 
                     //Add image to the storage blob imagemovies
-                    await _movieImageCrudRepository.Add(imageBytes, movieEntity.Id);
+                    await _movieImageCrudRepository.Add(imageBytes, movieEntity.Id + "/" + DateTime.UtcNow.Ticks.ToString());
                 }
                 else
                 {
                     //Delete the entity from the storage table movies
                     await _movieEntityCrudRepository.Delete(movieEntity.Id);
                     //Delete the image from the storage blob movieimages
-                    await _movieImageCrudRepository.Delete(movieEntity.Id);
+                    await _movieImageCrudRepository.DeleteFolder(movieEntity.Id);
                 }
             }
             catch (Exception exception)
