@@ -47,5 +47,19 @@ namespace AppMovies.Repository
             CloudBlockBlob blob = _blobContainer.GetBlockBlobReference(blobName);
             await blob.DeleteAsync();
         }
+        public async Task DeleteFolder(string folderName)
+        {
+            var blobDirectory = _blobContainer.GetDirectoryReference(folderName);
+
+            var blobs = await blobDirectory.ListBlobsSegmentedAsync(false, BlobListingDetails.Metadata, 100, null, null, null);
+
+            foreach (IListBlobItem blob in blobs.Results)
+            {
+                if (blob.GetType() == typeof(CloudBlob) || blob.GetType().BaseType == typeof(CloudBlob))
+                {
+                    await ((CloudBlob)blob).DeleteIfExistsAsync();
+                }
+            }
+        }
     }
 }
