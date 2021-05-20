@@ -27,14 +27,14 @@ namespace AppMovies.Repository
 
         public async Task Update(string encryptedApiKey)
         {
-            TableOperation replaceOperation = TableOperation.Replace(new ApiKeyEntity()
+            TableOperation replaceOperation = TableOperation.InsertOrReplace(new ApiKeyEntity()
             {
                 PartitionKey = "apikey",
                 RowKey = "apikey",
                 ETag = "*",
                 ApiKey = encryptedApiKey
             });
-            TableResult result = await _table.ExecuteAsync(replaceOperation);
+            await _table.ExecuteAsync(replaceOperation);
         }
     }
 }
